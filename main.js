@@ -1,5 +1,6 @@
 const grille = document.querySelectorAll("#grille_de_jeu > div");
 const currentScore = document.querySelector("#stat_nombre_de_coups");
+const replay = document.querySelector("#rejouer");
 
 let pkmnArray;
 let gridArray = [];
@@ -9,6 +10,7 @@ for (let i = 0; i < grille.length; i++) {
     index: i,
     affectedPkmn: null,
     checked: false,
+    found: false,
   });
 }
 
@@ -110,27 +112,27 @@ grille.forEach((cell) => {
         firstCell = gridArray[cellPos];
         firstCellToRender = cell;
         firstMove = false;
-        console.log("Première cellule : ");
-        console.log(firstCellToRender);
 
         // Sinon c'est le second donc on compare les pokémons
       } else {
         secondCell = gridArray[cellPos];
         secondCellToRender = cell;
-        console.log("Seconde cellule : ");
-        console.log(secondCellToRender);
         canClick = false;
 
         // SI les pokémon sont les mêmes
         if (firstCell.affectedPkmn == secondCell.affectedPkmn) {
           firstCellToRender.innerHTML += `<img src="./assets/pokeball.png" class="pokeball" />`;
           secondCellToRender.innerHTML += `<img src="./assets/pokeball.png" class="pokeball" />`;
-          firstCell.checked = false;
-          secondCell.checked = false;
-          firstCell = null;
-          secondCell = null;
           firstCellToRender = null;
           secondCellToRender = null;
+
+          firstCell.checked = false;
+          secondCell.checked = false;
+          firstCell.found = true;
+          secondCell.found = true;
+          firstCell = null;
+          secondCell = null;
+
           firstMove = true;
           canClick = true;
           score++;
@@ -158,6 +160,17 @@ grille.forEach((cell) => {
           }, 1000);
         }
       }
+    }
+
+    let verify = 0;
+    for (verify = 0; verify < gridArray.length; verify++) {
+      if (!gridArray[verify].found) {
+        break;
+      }
+    }
+    if (verify == gridArray.length) {
+      console.log("finish");
+      replay.style.display = "block";
     }
   });
 });
